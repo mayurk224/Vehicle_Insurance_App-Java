@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends JFrame {
     Font myFont = new Font("SansSerif", Font.BOLD, 20);
@@ -14,10 +16,19 @@ public class Main extends JFrame {
     JRadioButton damageRadio1, damageRadio2, damageRadio3,damageRadio4;
     ButtonGroup G1;
 
+    // Panel 3
+    JCheckBox obligatoryCHKBX,allRiskCHKBX, vDamageCHKBX, dDamageCHKBX, assisCHKBX;
+    List<String> coveredRisksList = new ArrayList<>();
+    List<Float> premiumRisksList = new ArrayList<>();
+    List<Float> coverageRisksList = new ArrayList<>();
+    List<Float> ceilingRiskList = new ArrayList<>();
+
     // Constructor
     public Main(){
         CustomizePanel1();
         CustomizePanel2();
+        CustomizePanel3();
+
     }
 
     private void CustomizePanel1(){
@@ -43,14 +54,13 @@ public class Main extends JFrame {
         p1.add(CityLBL);    p1.add(subCity);
         p1.add(phoneLBL);   p1.add(subPhone);
 
-        p1.setBounds(15,15,300,180);
+        p1.setBounds(15,15,300,200);
         p1.setLayout(new GridLayout(4,1));
 
         // Adding panel to jframe
         setLayout(null);
         add(p1);
     }
-
 
     private void CustomizePanel2(){
         JPanel p2 = new JPanel();
@@ -97,12 +107,47 @@ public class Main extends JFrame {
         p2.add(damageRadio4);
 
         // customize p2
-        p2.setBounds(15,210,300,400);
+        p2.setBounds(15,230,300,400);
         p2.setLayout(new GridLayout(13,1));
         add(p2);
     }
 
+    private void CustomizePanel3(){
+        JPanel p3 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder
+                (BorderFactory.createLineBorder(Color.gray,1),
+                        "Plan", TitledBorder.CENTER,TitledBorder.DEFAULT_POSITION, myFont,myColor);
 
+        p3.setBorder(titledBorder);
+        p3.setBounds(330,15,300,200);
+        p3.setLayout(new GridLayout(6,1));
+
+        JLabel packageLBL = new JLabel("Select your Plan");
+
+        // Checkbox
+        obligatoryCHKBX = new JCheckBox("Obligatory");
+        allRiskCHKBX = new JCheckBox("All Risk");
+        vDamageCHKBX = new JCheckBox("Vehicle Damage");
+        dDamageCHKBX = new JCheckBox("Driver Damage");
+        assisCHKBX = new JCheckBox("Assistance");
+
+        // get all risks covered by plan
+        GetRiskCoveredByPlan();
+
+        // add component to p3
+        p3.add(packageLBL);
+        p3.add(obligatoryCHKBX);
+        p3.add(allRiskCHKBX);
+        p3.add(vDamageCHKBX);
+        p3.add(dDamageCHKBX);
+        p3.add(assisCHKBX);
+
+        add(p3);
+    }
+
+    private void GetRiskCoveredByPlan(){
+
+    }
 
 
 
