@@ -79,4 +79,11 @@ public class Policy implements Serializable {
     public void setPolicyDate(LocalDate policyDate) {
         this.policyDate = policyDate;
     }
+
+    @Override
+    public String toString(){
+        return "Policy NB: " +policyNB+
+                "\n" +vehicle+
+                "\nValidity Year:" +validityYear;
+    }
 }

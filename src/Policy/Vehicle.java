@@ -59,10 +59,10 @@ public class Vehicle implements Serializable {
 
     @Override
     public String toString() {
-        return "Plate No=" + plateNo +
-                "\nModel Year=" + modelYear +
-                "\nManufacture='" + manufacture +
-                "\nEstimated Value=" + estimatedValue +
-                "\nCar Damage=" + carDamage;
+        return "Plate No:" + plateNo +
+                "\nModel Year:" + modelYear +
+                "\nManufacture:'" + manufacture +
+                "\nEstimated Value:" + estimatedValue +
+                "\nCar Damage:" + carDamage;
     }
 }
