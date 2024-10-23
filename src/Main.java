@@ -1,11 +1,12 @@
+import Policy.Customer;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 
 public class Main extends JFrame {
@@ -40,6 +41,11 @@ public class Main extends JFrame {
     JTextField searchText;
     JLabel spacer3,spacer4,spacer5,spacer6;
 
+    // Panel 6
+    JTextArea risksTXT;
+    JTextField searchTXT;
+    Map<Integer, Customer> customerMap = new TreeMap<>();
+
 
     // Constructor
     public Main(){
@@ -48,6 +54,7 @@ public class Main extends JFrame {
         CustomizePanel3();
         CustomizePanel4();
         CustomizePanel5();
+        CustomizePanel6();
     }
 
     private void CustomizePanel1(){
@@ -303,6 +310,30 @@ public class Main extends JFrame {
         p5.add(spacer6);
 
         add(p5);
+    }
+
+    private void CustomizePanel6(){
+        JPanel p6 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder
+                (BorderFactory.createLineBorder(Color.gray,1),
+                        "Covered Risks", TitledBorder.CENTER,TitledBorder.DEFAULT_POSITION, myFont,myColor);
+
+        p6.setBorder(titledBorder);
+        p6.setBounds(645,15,300,200);
+
+        risksTXT = new JTextArea(7,1);
+        risksTXT.setEditable(false);
+        risksTXT.setOpaque(false);
+        risksTXT.setLineWrap(true);
+
+        // Font
+        Font font = risksTXT.getFont();
+        float size = font.getSize() + 3.0f;
+        risksTXT.setFont(font.deriveFont(size));
+
+        p6.add(risksTXT);
+        p6.setLayout(new GridLayout(1,1));
+        add(p6);
     }
 
     private void GetRiskCoveredByPlan(){
