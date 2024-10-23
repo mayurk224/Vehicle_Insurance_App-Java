@@ -35,12 +35,19 @@ public class Main extends JFrame {
     SimpleDateFormat df;
     Date currentDate;
 
+    // Panel 5
+    JButton saveBTN, loadBTN, newBTN, showBTN;
+    JTextField searchText;
+    JLabel spacer3,spacer4,spacer5,spacer6;
+
+
     // Constructor
     public Main(){
         CustomizePanel1();
         CustomizePanel2();
         CustomizePanel3();
         CustomizePanel4();
+        CustomizePanel5();
     }
 
     private void CustomizePanel1(){
@@ -226,6 +233,76 @@ public class Main extends JFrame {
 
         // adding p4 to frame
         add(p4);
+    }
+
+    private void CustomizePanel5(){
+        JPanel p5 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder
+                (BorderFactory.createLineBorder(Color.gray,1),
+                        "Actions", TitledBorder.CENTER,TitledBorder.DEFAULT_POSITION, myFont,myColor);
+
+        p5.setBorder(titledBorder);
+        p5.setBounds(330,500,300,230);
+        p5.setLayout(new GridLayout(7,1));
+
+        saveBTN = new JButton("Save Customer");
+        showBTN = new JButton("Show Plan Details");
+        loadBTN = new JButton("Load Customer");
+        newBTN = new JButton("New Customer");
+
+        searchText = new JTextField("Enter Car Plate No");
+        searchText.setOpaque(false);
+
+        showBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // add here the code be executed
+            }
+        });
+
+        saveBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // add here the code be executed
+            }
+        });
+
+        loadBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // add here the code be executed
+            }
+        });
+
+        newBTN.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // add here the code be executed
+            }
+        });
+
+        spacer3 = new JLabel(" ");
+        spacer3.setOpaque(false);
+
+        spacer4 = new JLabel(" ");
+        spacer4.setOpaque(false);
+
+        spacer5 = new JLabel(" ");
+        spacer5.setOpaque(false);
+
+        spacer6 = new JLabel(" ");
+        spacer6.setOpaque(false);
+
+        p5.add(spacer6);
+        p5.add(showBTN);
+        p5.add(saveBTN);
+        p5.add(newBTN);
+        p5.add(spacer5);
+        p5.add(searchText);
+        p5.add(loadBTN);
+        p5.add(spacer6);
+
+        add(p5);
     }
 
     private void GetRiskCoveredByPlan(){
