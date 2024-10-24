@@ -56,6 +56,11 @@ public class Main extends JFrame {
     JLabel claimingTXT, claimingTXT2;
     JTextField claimingCustomerField;
 
+    // Panel 10
+    JLabel claimingCustomerNameLBL,claimStatusLBL2,claimingCustomerValidDateLBL;
+    JTextArea claimingCustomerRisksCoveredAREA;
+    boolean cond1,cond2,cond3;
+
 
     // Constructor
     public Main(){
@@ -68,6 +73,7 @@ public class Main extends JFrame {
         CustomizePanel7();
         CustomizePanel8();
         CustomizePanel9();
+        CustomizePanel10();
     }
 
     private void CustomizePanel1(){
@@ -462,6 +468,32 @@ public class Main extends JFrame {
         // Add Panel to JFrame
         setLayout(null);  // Use absolute layout for JFrame
         add(p9);
+    }
+
+    private void CustomizePanel10(){
+        JPanel p10 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.gray, 1),
+                "Claim Status", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, myFont, myColor);
+        p10.setBorder(titledBorder);
+        p10.setBounds(960,520,300,230);
+        p10.setLayout(new GridLayout(4,1));
+
+        claimingCustomerNameLBL = new JLabel("Claiming Customer");
+        claimingCustomerValidDateLBL = new JLabel("Date Validity of Policy");
+        claimStatusLBL2 = new JLabel("Claiming Status");
+
+        claimingCustomerRisksCoveredAREA = new JTextArea();
+        JScrollPane pictureScrollPane = new JScrollPane(claimingCustomerRisksCoveredAREA);
+        claimingCustomerRisksCoveredAREA.setOpaque(false);
+
+        p10.add(claimingCustomerNameLBL);
+        p10.add(claimingCustomerValidDateLBL);
+        p10.add(pictureScrollPane);
+        p10.add(claimStatusLBL2);
+
+        add(p10);
+
     }
 
 
