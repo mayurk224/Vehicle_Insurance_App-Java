@@ -1,10 +1,13 @@
 import Policy.Customer;
+import Policy.Policy;
+import Policy.Vehicle;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -547,10 +550,57 @@ public class Main extends JFrame {
 
     }
 
+
+
     private void GetRiskCoveredByPlan(){
 
     }
 
+    public Customer GetCustomerData() {
+        try {
+            // Retrieve customer data from text fields
+            String firstName = subFName.getText();
+            String lastName = subLName.getText();
+            String city = subCity.getText();
+            int phone = Integer.parseInt(subPhone.getText());  // May throw NumberFormatException
+
+            // Create and return a Customer object
+            return new Customer(firstName, lastName, city, phone, GetPolicyData());
+        } catch (NumberFormatException e) {
+            // Handle invalid phone number input
+            JOptionPane.showMessageDialog(null,
+                    "Invalid phone number. Please enter a valid number.",
+                    "Input Error", JOptionPane.ERROR_MESSAGE);
+            return null;  // Return null if input is invalid
+        }
+    }
+
+    public Policy GetPolicyData(){
+
+    };
+
+    public Vehicle GetVehicleData() throws ParseException{
+        return new Vehicle(Integer.parseInt(plateNb.getText()),
+                Integer.parseInt(model.getText()),
+                manufacture.getText(),
+                Integer.parseInt(estimated.getText()),
+        GetDamageState()
+        );
+    }
+
+    public int GetDamageState(){
+if(damageRadio1.isSelected()){
+    return 1;
+} else if (damageRadio2.isSelected()) {
+    return 2;
+} else if (damageRadio3.isSelected()) {
+    return 3;
+}else if(damageRadio4.isSelected()){
+    return 4;
+}else {
+    return 0;
+}
+    }
 
 
     public static void main(String[] args) {
