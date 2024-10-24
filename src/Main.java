@@ -61,6 +61,10 @@ public class Main extends JFrame {
     JTextArea claimingCustomerRisksCoveredAREA;
     boolean cond1,cond2,cond3;
 
+    // Panel 11
+    JTextArea settlementArea;
+    float totalPremium = 0f, totalCoverage = 0f, totalCeiling = 0f;
+
 
     // Constructor
     public Main(){
@@ -74,6 +78,7 @@ public class Main extends JFrame {
         CustomizePanel8();
         CustomizePanel9();
         CustomizePanel10();
+        CustomizePanel11();
     }
 
     private void CustomizePanel1(){
@@ -496,6 +501,25 @@ public class Main extends JFrame {
 
     }
 
+    private void CustomizePanel11(){
+        JPanel p11 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.gray, 1),
+                "Payment", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, myFont, myColor);
+        p11.setBorder(titledBorder);
+        p11.setBounds(1275,15,250,230);
+        p11.setLayout(new GridLayout(2,1));
+
+        settlementArea = new JTextArea();
+        settlementArea.setOpaque(false);
+
+        Font font = settlementArea.getFont();
+        float size = font.getSize()+4.0f;
+        settlementArea.setFont(font.deriveFont(size));
+
+        p11.add(settlementArea);
+        add(p11);
+    }
 
     private void GetRiskCoveredByPlan(){
 
