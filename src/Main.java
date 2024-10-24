@@ -52,6 +52,10 @@ public class Main extends JFrame {
     // Panel 8
     JTextArea customerTXT;
 
+    // Panel 9
+    JLabel claimingTXT, claimingTXT2;
+    JTextField claimingCustomerField;
+
 
     // Constructor
     public Main(){
@@ -63,7 +67,7 @@ public class Main extends JFrame {
         CustomizePanel6();
         CustomizePanel7();
         CustomizePanel8();
-
+        CustomizePanel9();
     }
 
     private void CustomizePanel1(){
@@ -392,6 +396,74 @@ public class Main extends JFrame {
         p8.setLayout(new GridLayout(1,1));
         add(p8);
     }
+
+    private void CustomizePanel9() {
+        // Main Panel with Titled Border
+        JPanel p9 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Color.gray, 1),
+                "Claims", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, myFont, myColor);
+        p9.setBorder(titledBorder);
+        p9.setLayout(new BoxLayout(p9, BoxLayout.Y_AXIS)); // Vertical layout for panel
+        p9.setBounds(960, 15, 300, 485);
+
+        // Label: Instruction for plate number input
+        claimingTXT = new JLabel("Enter plate no. for the claiming:");
+        claimingTXT.setAlignmentX(Component.CENTER_ALIGNMENT); // Center-align
+
+        // TextField: For customer input
+        claimingCustomerField = new JTextField();
+        claimingCustomerField.setPreferredSize(new Dimension(250, 30));
+        claimingCustomerField.setMaximumSize(claimingCustomerField.getPreferredSize()); // Prevent stretching
+
+        // Button: Search Customer
+        JButton searchClaimer = new JButton("Search Customer");
+        searchClaimer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Spacer between sections
+        JLabel spacer9 = new JLabel(" ");
+        spacer9.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Label: Instruction for damage selection
+        claimingTXT2 = new JLabel("Select the type of Damage or Asset:");
+        claimingTXT2.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // JList: For damage or asset selection
+        String[] items = {
+                "Fire", "Robbery", "Third Party Damage",
+                "Vehicle Damage", "Driver Damage",
+                "Transport", "Car Replacement"
+        };
+        JList<String> claimList = new JList<>(items);
+        claimList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        claimList.setPreferredSize(new Dimension(250, 150));
+        claimList.setMaximumSize(claimList.getPreferredSize()); // Prevent stretching
+        JScrollPane claimListScroll = new JScrollPane(claimList); // Add scroll for better UX
+
+        // Button: Confirm Claim
+        JButton confirmClaimBTN = new JButton("Confirm Claim");
+        confirmClaimBTN.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Add Components to Main Panel (p9)
+        p9.add(Box.createVerticalStrut(10));  // Spacer at the top
+        p9.add(claimingTXT);
+        p9.add(Box.createVerticalStrut(5));  // Small spacer
+        p9.add(claimingCustomerField);
+        p9.add(Box.createVerticalStrut(10));  // Spacer between sections
+        p9.add(searchClaimer);
+        p9.add(Box.createVerticalStrut(20));  // Larger spacer
+        p9.add(claimingTXT2);
+        p9.add(Box.createVerticalStrut(5));  // Small spacer
+        p9.add(claimListScroll);  // Add the list with scroll pane
+        p9.add(Box.createVerticalStrut(20));  // Spacer before the button
+        p9.add(confirmClaimBTN);
+        p9.add(Box.createVerticalStrut(10));  // Spacer at the bottom
+
+        // Add Panel to JFrame
+        setLayout(null);  // Use absolute layout for JFrame
+        add(p9);
+    }
+
 
     private void GetRiskCoveredByPlan(){
 
