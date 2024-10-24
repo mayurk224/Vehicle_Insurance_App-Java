@@ -49,6 +49,9 @@ public class Main extends JFrame {
     // Panel 7
     JTextArea policyTXT;
 
+    // Panel 8
+    JTextArea customerTXT;
+
 
     // Constructor
     public Main(){
@@ -59,6 +62,8 @@ public class Main extends JFrame {
         CustomizePanel5();
         CustomizePanel6();
         CustomizePanel7();
+        CustomizePanel8();
+
     }
 
     private void CustomizePanel1(){
@@ -362,6 +367,30 @@ public class Main extends JFrame {
         p7.add(policyTXT);
         p7.setLayout(new GridLayout(1,1));
         add(p7);
+    }
+
+    private void CustomizePanel8(){
+        JPanel p8 = new JPanel();
+        TitledBorder titledBorder = BorderFactory.createTitledBorder
+                (BorderFactory.createLineBorder(Color.gray,1),
+                        "Customer Details", TitledBorder.CENTER,TitledBorder.DEFAULT_POSITION, myFont,myColor);
+
+        p8.setBorder(titledBorder);
+        p8.setBounds(645,500,300,200);
+        p8.setLayout(new GridLayout(6,1));
+
+        customerTXT = new JTextArea(20,1);
+        customerTXT.setEditable(false);
+        customerTXT.setOpaque(false);
+        customerTXT.setLineWrap(true);
+
+        Font font = customerTXT.getFont();
+        float size = font.getSize()+3.0f;
+        customerTXT.setFont(font.deriveFont(size));
+
+        p8.add(customerTXT);
+        p8.setLayout(new GridLayout(1,1));
+        add(p8);
     }
 
     private void GetRiskCoveredByPlan(){
