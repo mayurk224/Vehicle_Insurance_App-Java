@@ -792,6 +792,42 @@ public class Main extends JFrame {
         return customer;
     }
 
+    private boolean CheckPolicyValidity(LocalDate v_validityofPolicy){
+        LocalDate now = LocalDate.now();
+        if(now.isBefore(v_validityofPolicy)){
+            cond3 = true;
+            return true;
+        }
+        else {
+            cond3 = false;
+            return false;
+        }
+    }
+
+    private boolean ClaimIsValid(){
+        if(cond1 && cond2 && cond3){
+            claimStatusLBL2.setText("Claiming Status: You can register the claim");
+            return true;
+        }
+        else {
+            claimStatusLBL2.setText("Claiming Status: Not Able to register the Claim");
+            return false;
+        }
+    }
+
+    private void DisplayPaymentsOfPolicy(){
+        for(int i = 0; i < premiumRisksList.size(); i++){
+            totalPremium += premiumRisksList.get(i);
+            totalCoverage += coverageRisksList.get(i);
+            totalCeiling += ceilingRiskList.get(i);
+        }
+        settlementArea.setText(
+                "Total Premium: " +totalPremium*Integer.parseInt(estimated.getText())+ "$ \n" +
+                "Risks Coverage: " +totalCoverage*Integer.parseInt(estimated.getText())*10 + "$ \n"+
+                "Max Ceiling : " +totalCeiling*Integer.parseInt(estimated.getText())+ 100000 + "$ \n"
+                );
+    }
+
 
     public static void main(String[] args) {
         Main main = new Main();
