@@ -755,6 +755,43 @@ public class Main extends JFrame {
         oos.close();
     }
 
+    private void SearchCustomerByMobileNo(){
+        File file = new File("D:/myfile.dat");
+        try {
+            InputStream is = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(is);
+            TreeMap<Integer,Customer> mapInFile =  (TreeMap<Integer, Customer>)ois.readObject();
+            ois.close();
+            is.close();
+
+            Customer c_finded = mapInFile.get(Integer.parseInt(searchText.getText()));
+            customerTXT.setText(c_finded.toString());
+
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Customer ClaimsSearchCustomerByMobileNo(){
+        Customer customer = new Customer();
+        File file = new File("D:/myfile.dat");
+        try {
+            InputStream is = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(is);
+
+            TreeMap<Integer,Customer> mapInFile = (TreeMap<Integer, Customer>)ois.readObject();
+            ois.close();
+            is.close();
+
+            customer = mapInFile.get(Integer.parseInt(claimingCustomerField.getText()));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return customer;
+    }
+
 
     public static void main(String[] args) {
         Main main = new Main();
