@@ -18,6 +18,6 @@ public class AllRisk extends Risk{
     }
 
     public String[] allRisksCovered ={
-            "Fire","Robbery","Transport","Car Replacement","Third Party Damage"
+            "Fire","Robbery","Transport","Car Replacement","Third Party Damage","Vehicle Damage","Driver Damage"
     };
 }

@@ -298,20 +298,35 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // add here the code be executed
+                String str = "";
+                for (String s : coveredRisksList) {
+                    str += s + "\n";
+                }
+                risksTXT.setText(str);
+                try{
+                    policyTXT.setText(GetPolicyData().toString());
+                    DisplayPaymentsOfPolicy();
+                } catch (ParseException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
         saveBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // add here the code be executed
+                SaveCustomerMapToDisk();
+                JOptionPane.showMessageDialog(null, "Customer data saved successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
             }
         });
+
 
         loadBTN.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // add here the code be executed
+                SearchCustomerByMobileNo();
             }
         });
 
@@ -319,6 +334,7 @@ public class Main extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // add here the code be executed
+                NewCustomer();
             }
         });
 
@@ -425,27 +441,61 @@ public class Main extends JFrame {
                 BorderFactory.createLineBorder(Color.gray, 1),
                 "Claims", TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION, myFont, myColor);
         p9.setBorder(titledBorder);
-        p9.setLayout(new BoxLayout(p9, BoxLayout.Y_AXIS)); // Vertical layout for panel
+        p9.setLayout(new BoxLayout(p9, BoxLayout.Y_AXIS));  // Vertical layout
         p9.setBounds(960, 15, 300, 485);
 
         // Label: Instruction for plate number input
         claimingTXT = new JLabel("Enter plate no. for the claiming:");
-        claimingTXT.setAlignmentX(Component.CENTER_ALIGNMENT); // Center-align
+        claimingTXT.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // TextField: For customer input
         claimingCustomerField = new JTextField();
         claimingCustomerField.setPreferredSize(new Dimension(250, 30));
-        claimingCustomerField.setMaximumSize(claimingCustomerField.getPreferredSize()); // Prevent stretching
+        claimingCustomerField.setMaximumSize(claimingCustomerField.getPreferredSize());
 
         // Button: Search Customer
         JButton searchClaimer = new JButton("Search Customer");
         searchClaimer.setAlignmentX(Component.CENTER_ALIGNMENT);
+        List<String> coveredRisksByUserLIST = new ArrayList<>();
+
+        // Action Listener for Search Customer button
+        searchClaimer.addActionListener(e -> {
+            cond1 = false;
+            cond2 = false;
+            cond3 = false;
+
+            try {
+                coveredRisksByUserLIST.clear();
+                Customer c = ClaimsSearchCustomerByMobileNo();
+                claimingCustomerNameLBL.setText("Claiming Customer: " + c.getFname() + " " + c.getLname());
+                cond1 = true;
+
+                // Collect covered risks
+                StringBuilder risks = new StringBuilder();
+                for (String risk : c.getPolicy().getRiskCoveredLIST()) {
+                    risks.append(risk).append("\n");
+                    coveredRisksByUserLIST.add(risk);
+                }
+
+                // Calculate and display policy validity
+                LocalDate policyDate = c.getPolicy().getPolicyDate();
+                LocalDate validityDate = policyDate.plusYears(c.getPolicy().getValidityYear());
+                claimingCustomerRisksCoveredAREA.setText("Covered Risks:\n" + risks);
+                claimingCustomerValidDateLBL.setText("Policy Validity: " + validityDate + " || " +
+                        CheckPolicyValidity(validityDate));
+
+                cond2 = c.getPolicy().getRiskCoveredLIST().size() >= 5;
+
+            } catch (Exception ex) {
+                claimingCustomerNameLBL.setText("Claiming Customer: Not Found");
+            }
+        });
 
         // Spacer between sections
         JLabel spacer9 = new JLabel(" ");
         spacer9.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Label: Instruction for damage selection
+        // Label: Instruction for damage or asset selection
         claimingTXT2 = new JLabel("Select the type of Damage or Asset:");
         claimingTXT2.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -457,28 +507,74 @@ public class Main extends JFrame {
         };
         JList<String> claimList = new JList<>(items);
         claimList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        claimList.setPreferredSize(new Dimension(250, 150));
-        claimList.setMaximumSize(claimList.getPreferredSize()); // Prevent stretching
-        JScrollPane claimListScroll = new JScrollPane(claimList); // Add scroll for better UX
+        claimList.setFixedCellHeight(25);  // Ensure consistent cell height
+        JScrollPane claimListScroll = new JScrollPane(claimList);  // Add scroll for better UX
+        claimListScroll.setPreferredSize(new Dimension(250, 150));
+        claimListScroll.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Button: Confirm Claim
         JButton confirmClaimBTN = new JButton("Confirm Claim");
         confirmClaimBTN.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Add Components to Main Panel (p9)
-        p9.add(Box.createVerticalStrut(10));  // Spacer at the top
+        // Action Listener for Confirm Claim button
+        confirmClaimBTN.addActionListener(e -> {
+            int[] selectedIndices = claimList.getSelectedIndices();
+            List<String> claimedList = new ArrayList<>();
+
+            for (int index : selectedIndices) {
+                String selected = claimList.getModel().getElementAt(index);
+                claimedList.add(selected);
+                System.out.println(selected);
+            }
+
+            // Verify if the claim is valid
+            cond2 = claimedList.containsAll(coveredRisksByUserLIST);
+
+            if (ClaimIsValid()) {
+                Customer c = ClaimsSearchCustomerByMobileNo();
+                double estimatedValue = c.getPolicy().getVehicle().getEstimatedValue();
+
+                // Process claims based on selected options
+                if (claimedList.contains("Fire")) {
+                    settlementArea2.setText("Fire Department: " + estimatedValue * 0.25 + " $");
+                } else if (claimedList.contains("Robbery")) {
+                    settlementArea2.setText("ProSec Company: " + estimatedValue * 0.5 + " $\n" +
+                            "Pay to Customer: " + estimatedValue + " $");
+                } else if (claimedList.contains("Third Party Damage")) {
+                    settlementArea2.setText("Driver in other Car: 2000 $");
+                } else if (claimedList.contains("Vehicle Damage")) {
+                    settlementArea2.setText("Pay to Customer: " + estimatedValue + " $");
+                } else if (claimedList.contains("Driver Damage")) {
+                    settlementArea2.setText("Pay to Customer: " + estimatedValue * 10 + " $");
+                } else if (claimedList.contains("Transport")) {
+                    settlementArea2.setText("Transport Company: " + estimatedValue * 0.5 + " $");
+                } else if (claimedList.contains("Car Replacement")) {
+                    settlementArea2.setText("Car Rental Company: " + estimatedValue * 0.2 + " $");
+                } else if (claimedList.size() > 2) {
+                    settlementArea2.setText(
+                            "Driver: " + estimatedValue * 4 + " $\n" +
+                                    "Hospital: " + estimatedValue * 4 + " $\n" +
+                                    "Car Rental Company: " + estimatedValue * 0.2 + " $\n" +
+                                    "Third Party Driver: " + estimatedValue * 2 + " $"
+                    );
+                }
+            }
+        });
+
+        // Add components to Main Panel (p9)
+        p9.add(Box.createVerticalStrut(10));
         p9.add(claimingTXT);
-        p9.add(Box.createVerticalStrut(5));  // Small spacer
+        p9.add(Box.createVerticalStrut(5));
         p9.add(claimingCustomerField);
-        p9.add(Box.createVerticalStrut(10));  // Spacer between sections
+        p9.add(Box.createVerticalStrut(10));
         p9.add(searchClaimer);
-        p9.add(Box.createVerticalStrut(20));  // Larger spacer
+        p9.add(Box.createVerticalStrut(20));
         p9.add(claimingTXT2);
-        p9.add(Box.createVerticalStrut(5));  // Small spacer
-        p9.add(claimListScroll);  // Add the list with scroll pane
-        p9.add(Box.createVerticalStrut(20));  // Spacer before the button
+        p9.add(Box.createVerticalStrut(5));
+        p9.add(claimListScroll);
+        p9.add(Box.createVerticalStrut(20));
         p9.add(confirmClaimBTN);
-        p9.add(Box.createVerticalStrut(10));  // Spacer at the bottom
+        p9.add(Box.createVerticalStrut(10));
 
         // Add Panel to JFrame
         setLayout(null);  // Use absolute layout for JFrame
@@ -549,7 +645,7 @@ public class Main extends JFrame {
         float size = font.getSize()+4.0f;
         settlementArea2.setFont(font.deriveFont(size));
 
-        p12.add(settlementArea);
+        p12.add(settlementArea2);
         add(p12);
 
     }
@@ -620,24 +716,48 @@ public class Main extends JFrame {
 
     public Customer GetCustomerData() {
         try {
-            // Retrieve customer data from text fields
-            String firstName = subFName.getText();
-            String lastName = subLName.getText();
-            String city = subCity.getText();
-            int phone = Integer.parseInt(subPhone.getText());  // May throw NumberFormatException
+            // Validate and retrieve customer data from text fields
+            String firstName = validateInput(subFName.getText(), "First Name");
+            String lastName = validateInput(subLName.getText(), "Last Name");
+            String city = validateInput(subCity.getText(), "City");
 
-            // Create and return a Customer object
-            return new Customer(firstName, lastName, city, phone, GetPolicyData());
-        } catch (NumberFormatException e) {
-            // Handle invalid phone number input
+            // Validate phone number input
+            int phone = validatePhoneNumber(subPhone.getText());
+
+            // Retrieve policy data and create a new Customer object
+            Policy policy = GetPolicyData();  // Ensure GetPolicyData() handles its own exceptions
+
+            return new Customer(firstName, lastName, city, phone, policy);
+
+        } catch (IllegalArgumentException | ParseException e) {
+            // Show error dialog for invalid input or parsing issues
             JOptionPane.showMessageDialog(null,
-                    "Invalid phone number. Please enter a valid number.",
-                    "Input Error", JOptionPane.ERROR_MESSAGE);
-            return null;  // Return null if input is invalid
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+                    e.getMessage(),
+                    "Input Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return null;  // Return null in case of error
         }
     }
+
+    // Helper method to validate non-empty input fields
+    private String validateInput(String input, String fieldName) {
+        if (input == null || input.trim().isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " cannot be empty.");
+        }
+        return input.trim();  // Return cleaned input
+    }
+
+    // Helper method to validate and parse phone number
+    private int validatePhoneNumber(String phoneText) {
+        try {
+            int phone = Integer.parseInt(phoneText.trim());
+            if (phone <= 0) throw new NumberFormatException();  // Handle negative/zero numbers
+            return phone;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid phone number. Please enter a positive number.");
+        }
+    }
+
 
     public Policy GetPolicyData() throws ParseException{
         currentDate = new Date();
@@ -671,9 +791,8 @@ public class Main extends JFrame {
        return 2;
     } else if (damageRadio3.isSelected()) {
       return 3;
-    }else if(damageRadio4.isSelected()){
-       return 4;
-    }else {
+    }
+    else {
         return 0;
     }
     }
@@ -714,34 +833,50 @@ public class Main extends JFrame {
 
     }
 
-    public void SaveCustomerMapToDisk() throws IOException, ClassNotFoundException {
-        File file = new File("D:/myfile.date");
-        int platenum = Integer.parseInt(plateNb.getText());
-        if(!file.exists()){
-            System.out.println("Not Exists");
-            file.createNewFile();
-            SaveCustomerMapToNewFile(platenum,file);
-        }
-        else {
-             TreeMap<Integer,Customer> newMapToSave = new TreeMap<>();
-            InputStream is = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(is);
+    public void SaveCustomerMapToDisk() {
+        File file = new File("D:/myfile.dat");
+        TreeMap<Integer, Customer> customerMap = new TreeMap<>();
 
-            TreeMap<Integer,Customer> mapInFile = (TreeMap<Integer,Customer>) ois.readObject();
-            ois.close();
-            is.close();
+        try {
+            // Parse plate number from input (with error handling).
+            int platenum;
+            try {
+                platenum = Integer.parseInt(plateNb.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Invalid plate number. Please enter a valid number.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;  // Exit if input is invalid.
+            }
 
-            newMapToSave.putAll(mapInFile);
+            // If file exists, read its content into the TreeMap.
+            if (file.exists()) {
+                try (InputStream is = new FileInputStream(file);
+                     ObjectInputStream ois = new ObjectInputStream(is)) {
+                    customerMap.putAll((TreeMap<Integer, Customer>) ois.readObject());
+                }
+            }
 
-            newMapToSave.put(platenum,GetCustomerData());
+            // Add or update the customer data.
+            customerMap.put(platenum, GetCustomerData());
 
-            OutputStream os = new FileOutputStream(file);
-            ObjectOutputStream oos = new ObjectOutputStream(os);
-            oos.writeObject(newMapToSave);
-            oos.flush();
-            oos.close();
+            // Save the updated TreeMap to the file.
+            try (OutputStream os = new FileOutputStream(file);
+                 ObjectOutputStream oos = new ObjectOutputStream(os)) {
+                oos.writeObject(customerMap);
+                JOptionPane.showMessageDialog(null,
+                        "Customer data saved successfully!",
+                        "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Error saving customer data: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();  // Log the error for debugging.
         }
     }
+
 
     private void SaveCustomerMapToNewFile(int platenum, File file) throws IOException {
         TreeMap<Integer,Customer> newMaptoSave = new TreeMap<Integer, Customer>();
@@ -755,22 +890,51 @@ public class Main extends JFrame {
         oos.close();
     }
 
-    private void SearchCustomerByMobileNo(){
+    private void SearchCustomerByMobileNo() {
         File file = new File("D:/myfile.dat");
-        try {
-            InputStream is = new FileInputStream(file);
-            ObjectInputStream ois = new ObjectInputStream(is);
-            TreeMap<Integer,Customer> mapInFile =  (TreeMap<Integer, Customer>)ois.readObject();
-            ois.close();
-            is.close();
 
-            Customer c_finded = mapInFile.get(Integer.parseInt(searchText.getText()));
-            customerTXT.setText(c_finded.toString());
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(null,
+                    "Data file not found! Please make sure the file exists at: " + file.getAbsolutePath(),
+                    "File Not Found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        try (InputStream is = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(is)) {
+
+            // Load the map from the file.
+            TreeMap<Integer, Customer> mapInFile = (TreeMap<Integer, Customer>) ois.readObject();
+
+            // Parse mobile number input (with error handling).
+            int mobileNumber;
+            try {
+                mobileNumber = Integer.parseInt(searchText.getText());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(null,
+                        "Invalid mobile number! Please enter a valid number.",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Search for the customer in the map.
+            Customer foundCustomer = mapInFile.get(mobileNumber);
+            if (foundCustomer != null) {
+                customerTXT.setText(foundCustomer.toString());
+            } else {
+                JOptionPane.showMessageDialog(null,
+                        "Customer not found for mobile number: " + mobileNumber,
+                        "Not Found", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(null,
+                    "An error occurred while searching for the customer: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            ex.printStackTrace();  // Log error for debugging.
         }
     }
+
 
     private Customer ClaimsSearchCustomerByMobileNo(){
         Customer customer = new Customer();
