@@ -1,5 +1,4 @@
 import Plan.*;
-import Plan.ObligatoryRisk;
 import Policy.Customer;
 import Policy.Policy;
 import Policy.Vehicle;
@@ -13,8 +12,8 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 public class Main extends JFrame {
     Font myFont = new Font("SansSerif", Font.BOLD, 20);
