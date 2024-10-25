@@ -9,6 +9,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -711,6 +712,47 @@ public class Main extends JFrame {
         assisCHKBX.setEnabled(true);
 
 
+    }
+
+    public void SaveCustomerMapToDisk() throws IOException, ClassNotFoundException {
+        File file = new File("D:/myfile.date");
+        int platenum = Integer.parseInt(plateNb.getText());
+        if(!file.exists()){
+            System.out.println("Not Exists");
+            file.createNewFile();
+            SaveCustomerMapToNewFile(platenum,file);
+        }
+        else {
+             TreeMap<Integer,Customer> newMapToSave = new TreeMap<>();
+            InputStream is = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(is);
+
+            TreeMap<Integer,Customer> mapInFile = (TreeMap<Integer,Customer>) ois.readObject();
+            ois.close();
+            is.close();
+
+            newMapToSave.putAll(mapInFile);
+
+            newMapToSave.put(platenum,GetCustomerData());
+
+            OutputStream os = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos.writeObject(newMapToSave);
+            oos.flush();
+            oos.close();
+        }
+    }
+
+    private void SaveCustomerMapToNewFile(int platenum, File file) throws IOException {
+        TreeMap<Integer,Customer> newMaptoSave = new TreeMap<Integer, Customer>();
+
+        newMaptoSave.put(platenum,GetCustomerData());
+
+        OutputStream os = new FileOutputStream(file);
+        ObjectOutputStream oos = new ObjectOutputStream(os);
+        oos.writeObject(newMaptoSave);
+        oos.flush();
+        oos.close();
     }
 
 
