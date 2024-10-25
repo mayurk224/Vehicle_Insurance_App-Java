@@ -14,7 +14,7 @@ public class Policy implements Serializable {
     int validityYear;
     LocalDate policyDate;
 
-    public Policy(Vehicle vehicle, List<String> riskCoveredLIST, List<Float> premiumLIST, List<Float> ceilingLIST, int validityYear, LocalDate policyDate) {
+    public Policy(Vehicle vehicle, List<String> riskCoveredLIST, List<Float> premiumLIST, List<Float> ceilingLIST, List<Float> ceilingRiskList, int validityYear, LocalDate policyDate) {
         this.vehicle = vehicle;
         this.riskCoveredLIST = riskCoveredLIST;
         this.premiumLIST = premiumLIST;

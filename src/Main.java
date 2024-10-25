@@ -1,5 +1,5 @@
 import Plan.*;
-import Plan.Obligatory;
+import Plan.ObligatoryRisk;
 import Policy.Customer;
 import Policy.Policy;
 import Policy.Vehicle;
@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
@@ -632,11 +633,25 @@ public class Main extends JFrame {
                     "Invalid phone number. Please enter a valid number.",
                     "Input Error", JOptionPane.ERROR_MESSAGE);
             return null;  // Return null if input is invalid
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public Policy GetPolicyData(){
+    public Policy GetPolicyData() throws ParseException{
+        currentDate = new Date();
 
+        LocalDate now = LocalDate.now();
+        Policy policy = new Policy(
+                GetVehicleData(),
+                coveredRisksList,
+                premiumRisksList,
+                coverageRisksList,
+                ceilingRiskList,
+                validateYear,
+                now
+        );
+        return policy;
     };
 
     public Vehicle GetVehicleData() throws ParseException{
@@ -660,6 +675,42 @@ public class Main extends JFrame {
     }else {
         return 0;
     }
+    }
+
+    private void NewCustomer(){
+        coverageRisksList.clear();
+        coveredRisksList.clear();
+        premiumRisksList.clear();
+        ceilingRiskList.clear();
+        cond1 = false;
+        cond2 = false;
+        cond3 = false;
+
+        subLName.setText("");
+        subLName.setText("");
+        subPhone.setText("");
+        subCity.setText("");
+
+        plateNb.setText("");
+        model.setText("");
+        manufacture.setText("");
+        estimated.setText("");
+
+        G1.clearSelection();
+        G2.clearSelection();
+
+        obligatoryCHKBX.setSelected(false);
+        allRiskCHKBX.setSelected(false);
+        vDamageCHKBX.setSelected(false);
+        dDamageCHKBX.setSelected(false);
+        assisCHKBX.setSelected(false);
+
+        obligatoryCHKBX.setEnabled(true);
+        vDamageCHKBX.setEnabled(true);
+        dDamageCHKBX.setEnabled(true);
+        assisCHKBX.setEnabled(true);
+
+
     }
 
 
