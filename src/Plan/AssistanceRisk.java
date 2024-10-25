@@ -16,7 +16,7 @@ public class AssistanceRisk extends Risk{
         return 8;
     }
 
-    public String[] AssistanceRisksCovered ={
+    public String[] assistanceRisksCovered ={
             "Fire","Robbery","Transport","Car Replacement"
     };
 }

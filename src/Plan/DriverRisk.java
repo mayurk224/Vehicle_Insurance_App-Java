@@ -16,7 +16,7 @@ public class DriverRisk extends Risk{
         return 6;
     }
 
-    public String[] DriverRisksCovered ={
+    public String[] driverRisksCovered ={
             "Driver Damage"
     };
 

@@ -17,7 +17,7 @@ public class VehicleRisk extends Risk{
         return 6f;
     }
 
-    public String[] ObligatoryRisksCovered ={
+    public String[] vehicleRisksCovered ={
             "Vehicle Damage"
     };
 }

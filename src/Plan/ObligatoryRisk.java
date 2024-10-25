@@ -1,6 +1,6 @@
 package Plan;
 
-public class Obligatory extends Risk{
+public class ObligatoryRisk extends Risk{
     @Override
     public float getPremium() {
         return 0.01f;
@@ -16,7 +16,7 @@ public class Obligatory extends Risk{
         return 4;
     }
 
-    public String[] VehicleRisksCovered ={
+    public String[] obligatoryRisksCovered ={
 "Third Party Damage"
     };
 }

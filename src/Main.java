@@ -1,3 +1,5 @@
+import Plan.*;
+import Plan.Obligatory;
 import Policy.Customer;
 import Policy.Policy;
 import Policy.Vehicle;
@@ -188,7 +190,7 @@ public class Main extends JFrame {
         assisCHKBX = new JCheckBox("Assistance");
 
         // get all risks covered by plan
-        GetRiskCoveredByPlan();
+        GetRisksCoveredByPlan();
 
         // add component to p3
         p3.add(packageLBL);
@@ -552,8 +554,66 @@ public class Main extends JFrame {
 
 
 
-    private void GetRiskCoveredByPlan(){
+    private void GetRisksCoveredByPlan(){
+        AllRisk allRisk = new AllRisk();
+        ObligatoryRisk obligatoryRisk = new ObligatoryRisk();
+        allRiskCHKBX.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dDamageCHKBX.setEnabled(false);
+                vDamageCHKBX.setEnabled(false);
+                assisCHKBX.setEnabled(false);
+                obligatoryCHKBX.setEnabled(false);
 
+                coveredRisksList.addAll(Arrays.asList(allRisk.allRisksCovered));
+                premiumRisksList.add(allRisk.getPremium());
+                coverageRisksList.add(allRisk.getCoverage());
+                ceilingRiskList.add(allRisk.getCeiling());
+            }
+        });
+
+        obligatoryCHKBX.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                coveredRisksList.add(obligatoryRisk.obligatoryRisksCovered[0]);
+                premiumRisksList.add(obligatoryRisk.getPremium());
+                coverageRisksList.add(obligatoryRisk.getCoverage());
+                ceilingRiskList.add(obligatoryRisk.getCeiling());
+            }
+        });
+
+        vDamageCHKBX.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                VehicleRisk vehicleRisk = new VehicleRisk();
+                coveredRisksList.add(vehicleRisk.vehicleRisksCovered[0]);
+                premiumRisksList.add(vehicleRisk.getPremium());
+                coverageRisksList.add(vehicleRisk.getCoverage());
+                ceilingRiskList.add(vehicleRisk.getCeiling());
+            }
+        });
+
+        dDamageCHKBX.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DriverRisk driverRisk = new DriverRisk();
+                coveredRisksList.add(driverRisk.driverRisksCovered[0]);
+                premiumRisksList.add(driverRisk.getPremium());
+                coverageRisksList.add(driverRisk.getCoverage());
+                ceilingRiskList.add(driverRisk.getCeiling());
+            }
+        });
+
+        assisCHKBX.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AssistanceRisk assistanceRisk = new AssistanceRisk();
+                coveredRisksList.addAll(Arrays.asList(assistanceRisk.assistanceRisksCovered));
+                premiumRisksList.add(assistanceRisk.getPremium());
+                coverageRisksList.add(assistanceRisk.getCoverage());
+                ceilingRiskList.add(assistanceRisk.getCeiling());
+            }
+        });
     }
 
     public Customer GetCustomerData() {
@@ -589,17 +649,17 @@ public class Main extends JFrame {
     }
 
     public int GetDamageState(){
-if(damageRadio1.isSelected()){
-    return 1;
-} else if (damageRadio2.isSelected()) {
-    return 2;
-} else if (damageRadio3.isSelected()) {
-    return 3;
-}else if(damageRadio4.isSelected()){
-    return 4;
-}else {
-    return 0;
-}
+    if(damageRadio1.isSelected()){
+        return 1;
+    } else if (damageRadio2.isSelected()) {
+       return 2;
+    } else if (damageRadio3.isSelected()) {
+      return 3;
+    }else if(damageRadio4.isSelected()){
+       return 4;
+    }else {
+        return 0;
+    }
     }
 
 
